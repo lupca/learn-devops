@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Roadmap: The Iron Commander</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* slate-900 */
+            color: #f8fafc; /* slate-50 */
+        }
+        .timeline-line {
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6, #ec4899);
+            border-radius: 4px;
+        }
+        @media (min-width: 768px) {
+            .timeline-line {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .timeline-item:nth-child(odd) .timeline-content {
+                padding-right: 3rem;
+                text-align: right;
+            }
+            .timeline-item:nth-child(even) .timeline-content {
+                padding-left: 3rem;
+                text-align: left;
+            }
+            .timeline-item:nth-child(odd) .timeline-icon-wrapper {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .timeline-item:nth-child(even) .timeline-icon-wrapper {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body class="antialiased pb-20">
+
+    <!-- Header Section -->
+    <header class="pt-16 pb-12 text-center px-4">
+        <div class="inline-flex items-center justify-center p-4 bg-slate-800 rounded-full mb-6 border border-slate-700 shadow-lg">
+            <i data-lucide="database" class="w-10 h-10 text-pink-500 mr-2"></i>
+            <i data-lucide="arrow-right" class="w-6 h-6 text-slate-400 mx-2"></i>
+            <i data-lucide="rocket" class="w-10 h-10 text-blue-500 ml-2"></i>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-pink-500">
+            Chiến Dịch: 30 ngày Chinh Phục DevOps
+        </h1>
+    </header>
+
+    <!-- Timeline Section -->
+    <div class="max-w-5xl mx-auto px-4 relative mt-8">
+        <div class="timeline-line hidden md:block"></div>
+        <!-- Mobile Line -->
+        <div class="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500 md:hidden rounded"></div>
+
+        <div class="space-y-12">
+            
+            <!-- Phase 1 -->
+            <div class="timeline-item relative flex flex-col md:flex-row items-start md:items-center justify-between group">
+                <div class="hidden md:block w-1/2 order-1 timeline-content pr-12">
+                    <h3 class="text-2xl font-bold text-blue-400 mb-2">Giai đoạn 1: Chiếm lĩnh "Cục Sắt"</h3>
+                    <p class="text-slate-300 mb-3">Chinh phục Linux & Mạng cơ bản.</p>
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700 inline-block text-left">
+                        <p class="text-sm text-slate-400"><strong class="text-blue-300">Hack tư duy DB:</strong><br/> - Phân quyền Linux (chmod/chown) y hệt như <code>GRANT/REVOKE</code> trong SQL.<br/>- Bỏ chuột, dùng Terminal như cách chị hay gõ Query thay vì dùng GUI.</p>
+                    </div>
+                </div>
+                <div class="timeline-icon-wrapper absolute left-4 md:left-1/2 transform md:-translate-x-1/2 flex items-center justify-center w-10 h-10 bg-slate-900 border-4 border-blue-500 rounded-full z-10 group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                    <i data-lucide="terminal" class="w-4 h-4 text-blue-500"></i>
+                </div>
+                <div class="md:w-1/2 order-2 pl-16 md:pl-12 w-full pt-1 md:pt-0">
+                    <div class="md:hidden mb-2">
+                        <h3 class="text-2xl font-bold text-blue-400">Giai đoạn 1: Chiếm lĩnh "Cục Sắt"</h3>
+                        <p class="text-slate-300">Chinh phục Linux & Mạng cơ bản.</p>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 mt-0.5 mr-3 shrink-0"></i>
+                            <span class="text-slate-200"><strong>Linux Survival:</strong> Bash shell, thao tác file, quản lý Process. Cấm dùng chuột.</span>
+                        </li>
+                        <li class="flex items-start bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 mt-0.5 mr-3 shrink-0"></i>
+                            <span class="text-slate-200"><strong>Networking & SSH:</strong> IP, Port. Phân biệt Public/Private Key (như ổ khóa và chìa).</span>
+                        </li>
+                        <li class="flex items-start bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 mt-0.5 mr-3 shrink-0"></i>
+                            <span class="text-slate-200"><strong>Multipass VM:</strong> Tạo và xóa máy ảo liên tục để làm quen với "Hạ tầng dùng một lần".</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Phase 2 -->
+            <div class="timeline-item relative flex flex-col md:flex-row items-start md:items-center justify-between group">
+                <div class="md:w-1/2 order-2 md:order-1 pl-16 md:pl-0 md:pr-12 w-full pt-1 md:pt-0 timeline-content text-left md:text-right">
+                    <div class="md:hidden mb-2">
+                        <h3 class="text-2xl font-bold text-purple-400">Giai đoạn 2: Đóng gói & Điều binh</h3>
+                        <p class="text-slate-300">Biến hệ thống thành Container bất tử.</p>
+                    </div>
+                    <ul class="space-y-3 mb-4">
+                        <li class="flex items-start md:flex-row-reverse bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 mt-0.5 md:ml-3 mr-3 md:mr-0 shrink-0"></i>
+                            <span class="text-slate-200"><strong>Docker Core:</strong> Đóng gói Postgres/MySQL vào container. Master khái niệm Volume.</span>
+                        </li>
+                        <li class="flex items-start md:flex-row-reverse bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 mt-0.5 md:ml-3 mr-3 md:mr-0 shrink-0"></i>
+                            <span class="text-slate-200"><strong>Docker Compose:</strong> Điều phối multi-container (App gọi DB nội bộ).</span>
+                        </li>
+                        <li class="flex items-start md:flex-row-reverse bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 mt-0.5 md:ml-3 mr-3 md:mr-0 shrink-0"></i>
+                            <span class="text-slate-200"><strong>K3s Basics:</strong> Làm quen Pod (Lính), Deployment (Tướng), Service (Định tuyến).</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="timeline-icon-wrapper absolute left-4 md:left-1/2 transform md:-translate-x-1/2 flex items-center justify-center w-10 h-10 bg-slate-900 border-4 border-purple-500 rounded-full z-10 group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(168,85,247,0.5)]">
+                    <i data-lucide="box" class="w-4 h-4 text-purple-500"></i>
+                </div>
+                <div class="hidden md:block w-1/2 order-1 md:order-2 pl-12 timeline-content text-left">
+                    <h3 class="text-2xl font-bold text-purple-400 mb-2">Giai đoạn 2: Đóng gói & Điều binh</h3>
+                    <p class="text-slate-300 mb-3">Biến hệ thống thành Container bất tử.</p>
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700 inline-block text-left">
+                        <p class="text-sm text-slate-400"><strong class="text-purple-300">Hack tư duy DB:</strong><br/>- Chị hiểu rõ dữ liệu cần Persistence (sống sót khi sập máy). Hãy áp dụng tư duy đó vào Docker <strong>Volumes</strong>. Container chết, Volume giữ data DB sống mãi.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 3 -->
+            <div class="timeline-item relative flex flex-col md:flex-row items-start md:items-center justify-between group">
+                <div class="hidden md:block w-1/2 order-1 timeline-content pr-12">
+                    <h3 class="text-2xl font-bold text-pink-400 mb-2">Giai đoạn 3: Lệnh bài Terraform</h3>
+                    <p class="text-slate-300 mb-3">Infrastructure as Code (IaC).</p>
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700 inline-block text-left">
+                        <p class="text-sm text-slate-400"><strong class="text-pink-300">Hack tư duy DB:</strong><br/>- Terraform State (<code>.tfstate</code>) chính là <strong>Transaction Log</strong> của cơ sở hạ tầng. Nó ghi nhận sự thật tuyệt đối. Lệnh <code>apply</code> giống như <code>COMMIT</code> một transaction.</p>
+                    </div>
+                </div>
+                <div class="timeline-icon-wrapper absolute left-4 md:left-1/2 transform md:-translate-x-1/2 flex items-center justify-center w-10 h-10 bg-slate-900 border-4 border-pink-500 rounded-full z-10 group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(236,72,153,0.5)]">
+                    <i data-lucide="file-code-2" class="w-4 h-4 text-pink-500"></i>
+                </div>
+                <div class="md:w-1/2 order-2 pl-16 md:pl-12 w-full pt-1 md:pt-0">
+                    <div class="md:hidden mb-2">
+                        <h3 class="text-2xl font-bold text-pink-400">Giai đoạn 3: Lệnh bài Terraform</h3>
+                        <p class="text-slate-300">Infrastructure as Code (IaC).</p>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 mt-0.5 mr-3 shrink-0"></i>
+                            <span class="text-slate-200"><strong>Providers & Resources:</strong> Dùng code HCL để điều khiển AWS/Multipass tạo máy ảo.</span>
+                        </li>
+                        <li class="flex items-start bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 mt-0.5 mr-3 shrink-0"></i>
+                            <span class="text-slate-200"><strong>The State File:</strong> Quản lý tfstate, hiểu cách Terraform tính toán sự thay đổi (plan).</span>
+                        </li>
+                        <li class="flex items-start bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 mt-0.5 mr-3 shrink-0"></i>
+                            <span class="text-slate-200"><strong>Provisioners & Cloud-init:</strong> Tự động tiêm script cấu hình ngay khi VM vừa boot xong.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Phase 4 -->
+            <div class="timeline-item relative flex flex-col md:flex-row items-start md:items-center justify-between group">
+                <div class="md:w-1/2 order-2 md:order-1 pl-16 md:pl-0 md:pr-12 w-full pt-1 md:pt-0 timeline-content text-left md:text-right">
+                    <div class="md:hidden mb-2">
+                        <h3 class="text-2xl font-bold text-yellow-400">Giai đoạn 4: Tổng tư lệnh GitOps</h3>
+                        <p class="text-slate-300">Tự động hóa toàn diện & Bảo mật cấp cao.</p>
+                    </div>
+                    <ul class="space-y-3 mb-4">
+                        <li class="flex items-start md:flex-row-reverse bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 mt-0.5 md:ml-3 mr-3 md:mr-0 shrink-0"></i>
+                            <span class="text-slate-200"><strong>ArgoCD (GitOps):</strong> Biến GitHub thành Single Source of Truth. ArgoCD tự đồng bộ.</span>
+                        </li>
+                        <li class="flex items-start md:flex-row-reverse bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 mt-0.5 md:ml-3 mr-3 md:mr-0 shrink-0"></i>
+                            <span class="text-slate-200"><strong>Secret Management (Vault):</strong> Bảo mật DB credentials. Không hardcode mật khẩu.</span>
+                        </li>
+                        <li class="flex items-start md:flex-row-reverse bg-slate-800 p-3 rounded-lg border border-slate-700 border-yellow-500/50 shadow-[0_0_10px_rgba(234,179,8,0.2)]">
+                            <i data-lucide="award" class="w-5 h-5 text-yellow-400 mt-0.5 md:ml-3 mr-3 md:mr-0 shrink-0"></i>
+                            <span class="text-slate-200"><strong>Final Boss:</strong> 1 lệnh <code>terraform apply</code> đẻ ra VM -> Cài K3s/Vault/ArgoCD -> Kéo App & DB lên.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="timeline-icon-wrapper absolute left-4 md:left-1/2 transform md:-translate-x-1/2 flex items-center justify-center w-10 h-10 bg-slate-900 border-4 border-yellow-500 rounded-full z-10 group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(234,179,8,0.5)]">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-yellow-500"></i>
+                </div>
+                <div class="hidden md:block w-1/2 order-1 md:order-2 pl-12 timeline-content text-left">
+                    <h3 class="text-2xl font-bold text-yellow-400 mb-2">Giai đoạn 4: Tổng tư lệnh GitOps</h3>
+                    <p class="text-slate-300 mb-3">Tự động hóa toàn diện & Bảo mật cấp cao.</p>
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700 inline-block text-left">
+                        <p class="text-sm text-slate-400"><strong class="text-yellow-300">Hack tư duy DB:</strong><br/>- ArgoCD hoạt động như cơ chế <strong>Master-Slave Replication</strong>. GitHub là Master, Cluster K8s là Slave. Mọi rẽ nhánh sai lệch trên Cluster sẽ bị ArgoCD "ghi đè" để khớp với Master.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Khởi tạo icons Lucide
+        lucide.createIcons();
+    </script>
+</body>
+</html>
