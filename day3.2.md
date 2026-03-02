@@ -1,4 +1,4 @@
-## Ngày 5: Giải phẫu Mạng chuyên sâu - Mô hình 7 tầng (OSI) qua lăng kính Database
+## Ngày 3.2: Giải phẫu Mạng chuyên sâu - Mô hình 7 tầng (OSI) qua lăng kính Database
 
 Chào chị! Những ngày trước chúng ta mới chỉ lướt qua lớp bề mặt của mạng (IP và Port). Nhưng khi làm DevSecOps, nếu hệ thống sập mà chị chỉ biết ping IP thì sẽ rất bế tắc. Để thực sự bắt đúng bệnh, chị phải hiểu dữ liệu được bọc qua **7 tầng mạng (Mô hình OSI)** như thế nào.
 

@@ -1,7 +1,3 @@
-Dưới đây là phần tiếp theo của bài viết, được chắp bút với tư duy phản biện sắc sảo, đi sâu vào thực tế tàn khốc của các "chức danh" và bối cảnh sinh tồn của một kỹ sư DevOps trong thời đại AI.
-
----
-
 ### Mê cung của những danh xưng: Sự thật về "Siêu nhân DevOps"
 
 Ngày nay, các công ty có xu hướng gắn cái mác "DevOps Engineer" cho bất kỳ ai đụng đến Hạ tầng (Infrastructure) hay CI/CD. Hệ lụy của việc này là một ảo tưởng tai hại: Kỹ sư DevOps tưởng rằng mình phải là "siêu nhân" gánh vác mọi thứ từ code, test, deploy đến dọn rác hệ thống.

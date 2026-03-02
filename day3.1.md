@@ -6,7 +6,7 @@ Dưới đây là một dự án thực tế: **"One-Click DB Provisioning"**. C
 
 ---
 
-## Ngày 4: Tự động hóa Hạ tầng bằng Bash Script (Stored Procedure của OS)
+## Ngày 3.1: Tự động hóa Hạ tầng bằng Bash Script (Stored Procedure của OS)
 
 ### Bước 1: Khởi tạo File kịch bản (Script)
 
