@@ -1,121 +1,84 @@
-Chào chị! Mấy ngày qua gõ tay từng lệnh là để hiểu bản chất. Nhưng trong thực tế dự án, gõ đi gõ lại mớ lệnh đó thì hệ thống có ngày "sập" vì lỗi đánh máy (human error).
-
-Một kỹ sư thực thụ sẽ gom tất cả các lệnh đó vào một file kịch bản và chạy nó bằng một cú Enter. Trong Database, chị gọi nó là **Stored Procedure** hay **PL/pgSQL**. Ở thế giới Linux và DevSecOps, nó gọi là **Bash Script**.
-
-Dưới đây là một dự án thực tế: **"One-Click DB Provisioning"**. Chị sẽ viết một kịch bản tự động hóa hoàn toàn Ngày 1, Ngày 2 và Ngày 3: Tự đẻ Server, tự móc IP ra, tự rèn khóa SSH và tự động đẩy khóa vào Server để bảo mật.
+Chào chị. Hôm nay chúng ta sẽ nói về một nhân vật thầm lặng nhưng vô cùng quan trọng trong hệ thống: Load Balancer — người phân phát khách hàng đều cho các máy chủ để hệ thống luôn mượt mà.
 
 ---
 
-## Ngày 3.1: Tự động hóa Hạ tầng bằng Bash Script (Stored Procedure của OS)
+## Ngày 3.1: Giải mã Load Balancer — Người phân phát công việc thông minh
 
-### Bước 1: Khởi tạo File kịch bản (Script)
+Khi có nhiều request cùng tới một dịch vụ (ví dụ Web App hoặc API), nếu chị chỉ để một máy chủ đơn lẻ nhận hết thì sẽ nhanh chóng quá tải. Load Balancer (LB) giống như một lễ tân thông minh: đứng ở cửa, nhận từng request và chỉ vào đúng nhân viên đang rảnh.
 
-Trên máy Laptop của chị (hoặc một con VM đóng vai trò là máy điều khiển), mở Terminal và tạo một file mới:
+### 1. L4 vs L7 — Hai kiểu "lễ tân" khác nhau
 
-> `nano init_db_node.sh`
+- Layer 4 (Transport, TCP/UDP) Load Balancer: Làm việc ở tầng TCP/UDP. Nó quyết định chuyển request theo IP:Port, rất nhanh và nhẹ.
+  - Ví dụ: TCP load balancing, Network Load Balancer
+  - Ưu điểm: hiệu năng cao, low-latency
+  - Nhược điểm: không hiểu HTTP nội dung (không route theo URL)
 
-*(Lưu ý đuôi `.sh` là quy ước cho file Shell Script, giống `.sql` cho file truy vấn).*
+- Layer 7 (Application, HTTP) Load Balancer: Làm việc ở tầng HTTP. Nó đọc Header, Path, Cookie, có thể route theo URL, set cookie "sticky session", hoặc trả lỗi 503 khi backend bận.
+  - Ví dụ: Nginx, HAProxy, AWS ALB
+  - Ưu điểm: thông minh, có thể làm routing theo đường dẫn, header, host
+  - Nhược điểm: phức tạp hơn và chậm hơn L4 một chút
 
-### Bước 2: Viết Code Tự động hóa
+> **Mermaid — Sơ đồ đơn giản (Client → LB → Pool of servers)**
 
-Chị copy toàn bộ đoạn mã dưới đây dán vào file `nano` vừa mở. Hãy đọc kỹ các phần comment (bắt đầu bằng dấu `#`) để thấy cách các lệnh `grep`, `awk`, `chmod` được phối hợp thế nào.
-
-```bash
-#!/bin/bash
-# Dòng trên cùng gọi là 'Shebang', nó báo cho OS biết phải dùng Bash để chạy file này (giống khai báo Engine).
-
-# 1. KHAI BÁO BIẾN (Variables)
-SERVER_NAME="db-prod-01"
-KEY_PATH="$HOME/.ssh/db_admin_key"
-
-echo "============================================="
-echo "🚀 BẮT ĐẦU QUÁ TRÌNH KHỞI TẠO SERVER $SERVER_NAME"
-echo "============================================="
-
-# 2. ĐẺ SERVER (Multipass)
-echo "[1/4] Đang gọi máy ảo mới..."
-multipass launch 24.04 --name $SERVER_NAME --cpus 1 --memory 1G --disk 5G
-
-# 3. LẤY IP TỰ ĐỘNG BẰNG grep VÀ awk (Sức mạnh của Ngày 1)
-# multipass info in ra nhiều dòng. Ta dùng grep lọc dòng chữ 'IPv4', sau đó dùng awk lấy cột thứ 2.
-echo "[2/4] Đang quét địa chỉ IP..."
-SERVER_IP=$(multipass info $SERVER_NAME | grep IPv4 | awk '{print $2}')
-echo "✅ IP của Server là: $SERVER_IP"
-
-# 4. TỰ ĐỘNG RÈN KHÓA SSH (Sức mạnh của Ngày 2)
-echo "[3/4] Kiểm tra khóa bảo mật SSH..."
-if [ ! -f "$KEY_PATH" ]; then
-    echo "🔑 Chưa có khóa, đang tiến hành rèn khóa mới..."
-    ssh-keygen -t ed25519 -f "$KEY_PATH" -N "" -C "admin@$SERVER_NAME"
-else
-    echo "🔑 Khóa đã tồn tại, bỏ qua bước rèn khóa."
-fi
-
-# 5. ĐẨY KHÓA LÊN SERVER VÀ KHÓA QUYỀN TRUY CẬP (Sức mạnh Ngày 1 + 3)
-echo "[4/4] Đang đẩy Public Key lên Server và thiết lập bảo mật (chmod)..."
-PUB_KEY=$(cat $KEY_PATH.pub)
-
-# Lệnh multipass exec cho phép đứng từ ngoài bắn thẳng lệnh vào bên trong Server
-multipass exec $SERVER_NAME -- bash -c "mkdir -p ~/.ssh && echo '$PUB_KEY' >> ~/.ssh/authorized_keys && chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys"
-
-echo "============================================="
-echo "🎉 HOÀN TẤT! HỆ THỐNG ĐÃ SẴN SÀNG."
-echo "👉 Để kết nối vào Database Server mà không cần mật khẩu, hãy copy và chạy lệnh sau:"
-echo "ssh -i $KEY_PATH ubuntu@$SERVER_IP"
-echo "============================================="
-
+```mermaid
+flowchart LR
+  Client1((Client)) --> LB["🎛️ Load Balancer"]
+  LB --> S1["Server 1\nhealthy"]
+  LB --> S2["Server 2\nhealthy"]
+  LB --> S3["Server 3\nunhealthy"]
+  S3 -.->|"health check failed"| LB
+  style LB fill:#BBDEFB,stroke:#0D47A1
+  style S3 fill:#FFCDD2,stroke:#B71C1C
 ```
 
-*Dán xong, nhấn `Ctrl+O` -> `Enter` để lưu, và `Ctrl+X` để thoát.*
+### 2. Các thuật toán phổ biến (Ai đi tiếp?)
 
-### Bước 3: Cấp quyền Thực thi (Execute)
+- Round Robin: phân phát lần lượt 1,2,3,1,2,3. Phù hợp khi các server có cấu hình tương đương.
+- Least Connections: gửi tới server có ít kết nối nhất — phù hợp khi request có thời gian xử lý khác nhau.
+- IP Hash / Consistent Hashing: cùng 1 client (IP) luôn tới cùng 1 server — dùng cho cache/local-session.
+- Sticky Sessions (Session Affinity): LB gán cookie để client luôn được route về cùng server (cần cho ứng dụng lưu session cục bộ).
 
-Bây giờ file `init_db_node.sh` chỉ là một file văn bản bình thường. Chị gõ thẳng `./init_db_node.sh` nó sẽ báo lỗi *Permission denied*.
+### 3. Health Checks — Bác sĩ trực của cụm
 
-Chị cần cấp quyền `x` (Execute - Quyền chạy) cho nó. Đây chính là bài học Ngày 1:
+LB thường kiểm tra backend bằng health check:
+- L4: kiểm tra TCP port (có accept connection không)
+- L7: gửi HTTP GET /healthz và chờ 200 OK
 
-> `chmod +x init_db_node.sh`
+Nếu server trả lỗi, LB ngừng gửi traffic tới server đó cho đến khi nó lành lại.
 
-### Bước 4: Chạy Script (Bấm nút Run)
+### 4. Load Balancer cho Database? (Góc nhìn DBA)
 
-Tận hưởng thành quả tự động hóa. Chị chỉ cần gõ đúng 1 dòng này và đi pha một tách cafe, mọi thứ sẽ tự chạy tuần tự từ trên xuống dưới:
+- Read replicas: Với DB như PostgreSQL, LB thường dùng phía ứng dụng: write → primary, read → pool of replicas. Một "read LB" có thể phân phát SELECT tới replica theo round-robin hoặc least-connections.
+- Sticky sessions cho DB thường không dùng (dễ gây mất cân bằng). Thay vào đó dùng proxy thông minh (pgbouncer, HAProxy) và replication-aware routing.
 
-> `./init_db_node.sh`
+### 5. Công cụ thực tế & ví dụ nhanh
 
-Khi script chạy xong, nó sẽ in ra màn hình một dòng lệnh `ssh` đã kèm sẵn đường dẫn khóa và IP. Chị chỉ việc copy dòng đó dán vào Terminal là chui thẳng vào Server.
+- Nginx (L7) — có thể làm reverse proxy + load balancing bằng `upstream`.
+- HAProxy (L4/L7) — chuyên nghiệp cho cả hiệu năng và tính năng (stick-tables, healthchecks).
+- Cloud LB: AWS ALB (L7), NLB (L4), GCP LB — quản lý sẵn.
 
----
-
-### Mở rộng thực tế: Script "Hủy diệt" (Teardown)
-
-Trong dự án thực tế, có code tạo lên thì phải có code đập đi để dọn dẹp môi trường (đặc biệt khi chạy CI/CD pipeline).
-
-Chị tạo thêm một file `destroy_db.sh`:
-
-> `nano destroy_db.sh`
-
-Nội dung cực ngắn:
-
-```bash
-#!/bin/bash
-SERVER_NAME="db-prod-01"
-
-echo "⚠️ Đang tiêu hủy Server $SERVER_NAME..."
-multipass delete $SERVER_NAME
-multipass purge
-echo "🗑️ Đã dọn dẹp sạch sẽ!"
+Ví dụ Nginx (ngắn gọn):
 
 ```
+upstream backend {
+  server 10.0.0.2:80;
+  server 10.0.0.3:80;
+}
+server {
+  listen 80;
+  location / {
+    proxy_pass http://backend;
+  }
+}
+```
 
-Cấp quyền và chạy:
+### 6. Bẫy & best-practices
 
-> `chmod +x destroy_db.sh`
-> `./destroy_db.sh`
+- Health check phải nhẹ và chính xác (ví dụ `/healthz` chỉ trả 200 khi tất cả thành phần sẵn sàng).
+- Tránh sticky sessions nếu có thể — dùng session store (Redis) thay vì lưu session trên server.
+- Theo dõi metrics: request rate, latency, error rate, active connections — LB phải cảnh báo khi backend bắt đầu chậm.
+- Test failover: bật/ tắt server để kiểm chứng LB có rút traffic ngay.
 
 ---
 
-Làm xong bài này, chị đã chính thức hiểu tư duy **Infrastructure as Code (IaC)** ở mức độ nguyên thủy nhất. Khi hệ thống lớn lên, thay vì viết Bash Script dài hàng nghìn dòng rất khó bảo trì, người ta sẽ dùng **Terraform** hoặc **Ansible**.
-
-Nhưng bản chất bên dưới của Terraform và Ansible, cuối cùng cũng chỉ là chạy những lệnh Bash và gọi các API tạo máy chủ y hệt như những gì chị vừa tự tay code ra hôm nay.
-
-Chị chạy thử Script đi xem có lỗi ở dòng nào không!
+**Câu hỏi tư duy:** Chị đang có một hệ thống web + 3 replica DB chỉ dùng để đọc. Chị muốn cân bằng truy vấn đọc. Chị sẽ dùng Round-Robin hay Least-Connections? Vì sao? (Gợi ý: xem độ dài phiên xử lý query và thời gian trả về)
