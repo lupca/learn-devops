@@ -146,7 +146,7 @@ kubectl get ns lab-terraform-chi
 
 ---
 
-### 4. Sức mạnh thực sự: Xóa sạch dấu vết
+### 4. Xóa sạch dấu vết
 
 Khi học xong, chị gõ lệnh này để dọn dẹp Cluster cho sạch sẽ:
 
